@@ -35,6 +35,7 @@ services:
       dockerfile: Dotnet.Homeworks.MainProject/Dockerfile
     depends_on:
       - dotnet_postgres
+      - dotnet_rabbitmq
     restart: on-failure
     environment:
       ConnectionStrings__Default: "Host=dotnet_postgres;Port=5432;Database=homeworks;Username=postgres;Password=postgres"
