@@ -9,8 +9,16 @@ services:
     ports:
       - "5432:5432"
 
-#  dotnet_rabbitmq:
-#    image: rabbitmq:3-alpine
+  dotnet_rabbitmq:
+    image: rabbitmq:3-management-alpine
+    environment:
+      # guest/guest намеренно заменён на свои данные
+      RABBITMQ_DEFAULT_USER: homeworks_user
+      RABBITMQ_DEFAULT_PASS: homeworks_pass_42
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
 #    
 #  dotnet_minio:
 #    image: minio/minio:latest
@@ -33,9 +41,22 @@ services:
       ASPNETCORE_ENVIRONMENT: "Development"
     ports:
       - "8080:80"
-#    
-#  dotnet_mailing:
-#    image: dotnet-web
+
+  dotnet_mailing:
+    build:
+      context: .
+      dockerfile: Dotnet.Homeworks.Mailing.API/Dockerfile
+    depends_on:
+      - dotnet_rabbitmq
+    restart: on-failure
+    environment:
+      RabbitMqConfig__Hostname: "dotnet_rabbitmq"
+      RabbitMqConfig__Username: "homeworks_user"
+      RabbitMqConfig__Password: "homeworks_pass_42"
+      EmailConfig__Email: "${EMAIL_ADDRESS:-}"
+      EmailConfig__Host: "smtp.gmail.com"
+      EmailConfig__Port: "587"
+      EmailConfig__Password: "${EMAIL_PASSWORD:-}"
 #    
 #  dotnet_storage:
 #    image: dotnet-web

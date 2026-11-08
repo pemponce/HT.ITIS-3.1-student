@@ -2,7 +2,9 @@ using Dotnet.Homeworks.Data.DatabaseContext;
 using Dotnet.Homeworks.DataAccess.Repositories;
 using Dotnet.Homeworks.Domain.Abstractions.Repositories;
 using Dotnet.Homeworks.Infrastructure.UnitOfWork;
+using Dotnet.Homeworks.MainProject.Configuration;
 using Dotnet.Homeworks.MainProject.Services;
+using Dotnet.Homeworks.MainProject.ServicesExtensions.Masstransit;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,6 +20,11 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(Dotnet.Homeworks.Features.Helpers.AssemblyReference.Assembly));
+
+var rabbitConfig = builder.Configuration.GetSection("RabbitMqConfig").Get<RabbitMqConfig>()
+                   ?? throw new InvalidOperationException(
+                       "Секция RabbitMqConfig не найдена (RabbitMqConfig__Hostname, __Username, __Password)");
+builder.Services.AddMasstransitRabbitMq(rabbitConfig);
 
 builder.Services.AddSingleton<IRegistrationService, RegistrationService>();
 builder.Services.AddSingleton<ICommunicationService, CommunicationService>();
