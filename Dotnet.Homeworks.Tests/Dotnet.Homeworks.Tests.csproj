@@ -10,7 +10,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
         <PackageReference Include="xunit" Version="2.9.2" />
         <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -24,7 +23,6 @@
         <PackageReference Include="Mapster" Version="7.4.0-pre06" />
         <PackageReference Include="MassTransit.TestFramework" Version="8.0.16" />
         <PackageReference Include="MediatR" Version="12.1.1" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0" />
         <PackageReference Include="Minio" Version="5.0.0" />
         <PackageReference Include="NetArchTest.Rules" Version="1.3.2" />
         <PackageReference Include="NSubstitute" Version="5.0.0" />
@@ -44,7 +42,11 @@
         <ProjectReference Include="..\Dotnet.Homeworks.Infrastructure\Dotnet.Homeworks.Infrastructure.csproj" />
         <ProjectReference Include="..\Dotnet.Homeworks.Mailing.API\Dotnet.Homeworks.Mailing.API.csproj" />
         <ProjectReference Include="..\Dotnet.Homeworks.MainProject\Dotnet.Homeworks.MainProject.csproj" />
+        <ProjectReference Include="..\Dotnet.Homeworks.Storage.API\Dotnet.Homeworks.Storage.API.csproj" />
         <ProjectReference Include="..\Dotnet.Homeworks.Tests.RunLogic\Dotnet.Homeworks.Tests.RunLogic.csproj" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.1" />
+        <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2" />
+        <PackageReference Include="coverlet.collector" Version="6.0.2" />
     </ItemGroup>
 
 </Project>
