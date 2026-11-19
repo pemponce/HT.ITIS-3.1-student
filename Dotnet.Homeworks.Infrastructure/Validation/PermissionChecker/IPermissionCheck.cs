@@ -4,5 +4,6 @@ namespace Dotnet.Homeworks.Infrastructure.Validation.PermissionChecker;
 
 public interface IPermissionCheck
 {
-    Task<IEnumerable<PermissionResult>> CheckPermissionAsync<TRequest>(TRequest request);
+    Task<IEnumerable<PermissionResult>> CheckPermissionAsync<TRequest>(
+        TRequest request);
 }

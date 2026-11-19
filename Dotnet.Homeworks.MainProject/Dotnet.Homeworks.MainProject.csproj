@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.7.1" />
       <PackageReference Include="MassTransit.Abstractions" Version="8.0.16" />
       <PackageReference Include="MassTransit.RabbitMQ" Version="8.0.16" />
       <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.8">
@@ -31,6 +32,7 @@
         <ProjectReference Include="..\Dotnet.Homeworks.Features\Dotnet.Homeworks.Features.csproj" />
         <ProjectReference Include="..\Dotnet.Homeworks.Infrastructure\Dotnet.Homeworks.Infrastructure.csproj" />
         <ProjectReference Include="..\Dotnet.Homeworks.Shared\Dotnet.Homeworks.Shared.csproj" />
+        <ProjectReference Include="..\Dotnet.Homeworks.Mediator\Dotnet.Homeworks.Mediator.csproj" />
     </ItemGroup>
 
 </Project>

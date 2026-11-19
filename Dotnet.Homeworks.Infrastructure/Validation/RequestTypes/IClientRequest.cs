@@ -1,4 +1,4 @@
-﻿namespace Dotnet.Homeworks.Infrastructure.Validation.RequestTypes;
+namespace Dotnet.Homeworks.Infrastructure.Validation.RequestTypes;
 
 public interface IClientRequest 
 {

@@ -1,10 +1,16 @@
 using Dotnet.Homeworks.Data.DatabaseContext;
 using Dotnet.Homeworks.DataAccess.Repositories;
 using Dotnet.Homeworks.Domain.Abstractions.Repositories;
+using Dotnet.Homeworks.Features.Behaviors;
+using Dotnet.Homeworks.Infrastructure.Validation.PermissionChecker.DependencyInjectionExtensions;
 using Dotnet.Homeworks.Infrastructure.UnitOfWork;
+using Dotnet.Homeworks.Features.Users.Abstractions;
 using Dotnet.Homeworks.MainProject.Configuration;
 using Dotnet.Homeworks.MainProject.Services;
 using Dotnet.Homeworks.MainProject.ServicesExtensions.Masstransit;
+using Dotnet.Homeworks.Mediator;
+using Dotnet.Homeworks.Mediator.DependencyInjectionExtensions;
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,10 +22,23 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("Default")));
 
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-builder.Services.AddMediatR(cfg =>
-    cfg.RegisterServicesFromAssembly(Dotnet.Homeworks.Features.Helpers.AssemblyReference.Assembly));
+builder.Services.AddHttpContextAccessor();
+
+var featuresAssembly = Dotnet.Homeworks.Features.Helpers.AssemblyReference.Assembly;
+
+// собственный медиатор (вместо MediatR)
+builder.Services.AddMediator(featuresAssembly);
+
+// PipelineBehavior'ы для операций UserManagement (порядок задаётся атрибутом [PipelineOrder])
+builder.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(AdminPermissionBehavior<,>));
+builder.Services.AddScoped(typeof(IPipelineBehavior<,>), typeof(AdminValidationBehavior<,>));
+
+// валидаторы FluentValidation и проверки разрешений, которые лежат вместе с фичами
+builder.Services.AddValidatorsFromAssembly(featuresAssembly);
+builder.Services.AddPermissionChecks(featuresAssembly);
 
 var rabbitConfig = builder.Configuration.GetSection("RabbitMqConfig").Get<RabbitMqConfig>()
                    ?? throw new InvalidOperationException(
@@ -28,6 +47,7 @@ builder.Services.AddMasstransitRabbitMq(rabbitConfig);
 
 builder.Services.AddSingleton<IRegistrationService, RegistrationService>();
 builder.Services.AddSingleton<ICommunicationService, CommunicationService>();
+builder.Services.AddScoped<IUserCreatedListener, UserCreatedEmailListener>();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie();
