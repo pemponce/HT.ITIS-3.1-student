@@ -4,5 +4,5 @@ namespace Dotnet.Homeworks.MainProject.Services;
 
 public interface ICommunicationService
 {
-    public Task SendEmailAsync(SendEmail sendEmailDto);
+    Task SendEmailAsync(SendEmail message);
 }
