@@ -1,6 +1,6 @@
-﻿namespace Dotnet.Homeworks.Infrastructure.Validation.RequestTypes;
+namespace Dotnet.Homeworks.Infrastructure.Validation.RequestTypes;
 
-public interface IClientRequest 
+public interface IClientRequest
 {
-    public Guid Guid { get; }
+    Guid Guid { get; }
 }

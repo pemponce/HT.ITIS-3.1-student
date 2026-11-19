@@ -5,15 +5,15 @@ namespace Dotnet.Homeworks.MainProject.Services;
 
 public class CommunicationService : ICommunicationService
 {
-    private readonly IBus _bus;
+    private readonly IPublishEndpoint _publishEndpoint;
 
-    public CommunicationService(IBus bus)
+    public CommunicationService(IPublishEndpoint publishEndpoint)
     {
-        _bus = bus;
+        _publishEndpoint = publishEndpoint;
     }
 
-    public Task SendEmailAsync(SendEmail sendEmailDto)
+    public Task SendEmailAsync(SendEmail message)
     {
-        return _bus.Publish(sendEmailDto);
+        return _publishEndpoint.Publish(message);
     }
 }

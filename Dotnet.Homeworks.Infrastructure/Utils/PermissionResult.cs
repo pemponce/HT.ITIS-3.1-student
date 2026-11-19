@@ -1,11 +1,14 @@
-﻿using Dotnet.Homeworks.Shared.Dto;
-
 namespace Dotnet.Homeworks.Infrastructure.Utils;
 
-public class PermissionResult : Result
+public class PermissionResult
 {
-    public PermissionResult(bool isSuccess, string? message = null)
-        : base(isSuccess, message)
+    public bool IsSuccess { get; }
+    public bool IsFailure => !IsSuccess;
+    public string? Error { get; }
+
+    public PermissionResult(bool isSuccess, string? error = null)
     {
+        IsSuccess = isSuccess;
+        Error = error;
     }
 }

@@ -12,14 +12,14 @@ public class RegistrationService : IRegistrationService
         _communicationService = communicationService;
     }
 
-    public async Task RegisterAsync(RegisterUserDto userDto)
+    public Task RegisterAsync(RegisterUserDto userDto)
     {
-        await Task.Delay(100);
-
-        await _communicationService.SendEmailAsync(new SendEmail(
+        var message = new SendEmail(
             userDto.Name,
             userDto.Email,
-            "Регистрация",
-            $"Здравствуйте, {userDto.Name}! Вы успешно зарегистрированы."));
+            "Добро пожаловать!",
+            $"Здравствуйте, {userDto.Name}! Спасибо за регистрацию.");
+
+        return _communicationService.SendEmailAsync(message);
     }
 }
