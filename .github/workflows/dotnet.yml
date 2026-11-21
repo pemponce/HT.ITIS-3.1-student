@@ -28,6 +28,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Prepare Minio image
+        run: |
+          docker pull scnd/minio-mirror:RELEASE.2025-09-07T16-13-09Z
+          docker tag scnd/minio-mirror:RELEASE.2025-09-07T16-13-09Z minio/minio:latest
       - name: Build in Debug mode
         run: dotnet build
       - name: Tests
