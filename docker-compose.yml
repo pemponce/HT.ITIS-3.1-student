@@ -12,23 +12,28 @@ services:
   dotnet_rabbitmq:
     image: rabbitmq:3-management-alpine
     environment:
-      # guest/guest намеренно заменён на свои данные
       RABBITMQ_DEFAULT_USER: homeworks_user
       RABBITMQ_DEFAULT_PASS: homeworks_pass_42
     ports:
       - "5672:5672"
       - "15672:15672"
 
-#    
-#  dotnet_minio:
-#    image: minio/minio:latest
-#    
-#  dotnet_mongodb:
-#    image: mongo:latest
-#    
-#  dotnet_jaeger:
-#    image: jaegertracing/all-in-one:latest
-#    
+  dotnet_minio:
+    image: scnd/minio-mirror:RELEASE.2025-09-07T16-13-09Z
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: homeworks_minio_user
+      MINIO_ROOT_PASSWORD: homeworks_minio_pass_42
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+  #
+  #  dotnet_mongodb:
+  #    image: mongo:latest
+  #
+  #  dotnet_jaeger:
+  #    image: jaegertracing/all-in-one:latest
+  #
   dotnet_main:
     build:
       context: .
@@ -39,6 +44,9 @@ services:
     restart: on-failure
     environment:
       ConnectionStrings__Default: "Host=dotnet_postgres;Port=5432;Database=homeworks;Username=postgres;Password=postgres"
+      RabbitMqConfig__Hostname: "dotnet_rabbitmq"
+      RabbitMqConfig__Username: "homeworks_user"
+      RabbitMqConfig__Password: "homeworks_pass_42"
       ASPNETCORE_ENVIRONMENT: "Development"
     ports:
       - "8080:80"
@@ -58,6 +66,20 @@ services:
       EmailConfig__Host: "smtp.gmail.com"
       EmailConfig__Port: "587"
       EmailConfig__Password: "${EMAIL_PASSWORD:-}"
-#    
-#  dotnet_storage:
-#    image: dotnet-web
+
+  dotnet_storage:
+    build:
+      context: .
+      dockerfile: Dotnet.Homeworks.Storage.API/Dockerfile
+    depends_on:
+      - dotnet_minio
+    restart: on-failure
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      MinioConfig__Username: "homeworks_minio_user"
+      MinioConfig__Password: "homeworks_minio_pass_42"
+      MinioConfig__Endpoint: "dotnet_minio"
+      MinioConfig__Port: "9000"
+      MinioConfig__WithSsl: "false"
+    ports:
+      - "8081:80"

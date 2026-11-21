@@ -45,8 +45,8 @@ var rabbitConfig = builder.Configuration.GetSection("RabbitMqConfig").Get<Rabbit
                        "Секция RabbitMqConfig не найдена (RabbitMqConfig__Hostname, __Username, __Password)");
 builder.Services.AddMasstransitRabbitMq(rabbitConfig);
 
-builder.Services.AddSingleton<IRegistrationService, RegistrationService>();
-builder.Services.AddSingleton<ICommunicationService, CommunicationService>();
+builder.Services.AddScoped<IRegistrationService, RegistrationService>();
+builder.Services.AddScoped<ICommunicationService, CommunicationService>();
 builder.Services.AddScoped<IUserCreatedListener, UserCreatedEmailListener>();
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
