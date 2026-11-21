@@ -53,14 +53,17 @@ public class PendingObjectsProcessor : BackgroundService
                     StringComparison.OrdinalIgnoreCase)).Value;
             await item.Content.DisposeAsync();
 
-            if (string.IsNullOrWhiteSpace(destination) || destination == Buckets.Pending) continue;
-
-            var copyResult = await pendingStorage.CopyItemToBucketAsync(name, destination, cancellationToken);
-            if (copyResult.IsFailure)
+            // Pending должен очищаться полностью. Если переносить некуда
+            // (нет назначения или назначение - сам Pending), объект просто удаляется
+            if (!string.IsNullOrWhiteSpace(destination) && destination != Buckets.Pending)
             {
-                _logger?.LogError("Failed to move '{Name}' to '{Destination}': {Error}",
-                    name, destination, copyResult.Error);
-                continue;
+                var copyResult = await pendingStorage.CopyItemToBucketAsync(name, destination, cancellationToken);
+                if (copyResult.IsFailure)
+                {
+                    _logger?.LogError("Failed to move '{Name}' to '{Destination}': {Error}",
+                        name, destination, copyResult.Error);
+                    continue;
+                }
             }
 
             await pendingStorage.RemoveItemAsync(name, cancellationToken);
